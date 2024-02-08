@@ -32,10 +32,16 @@
             </div>
         </div>
 
+        <div v-if="loggedIn">
+            <button @click="signTx" class="btn btn-secondary mt-2" :disabled="!loggedIn">Sign...</button>
+            <span v-if="loading" class="loading loading-dots loading-lg">Signing...</span>
+            <p v-if="executionTime > 0">Execution time: {{ executionTime }} milliseconds</p>
+        </div>
     </div>
 </template>
 
 <script>
+import Arweave from "arweave";
 import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 import { warpRead, warpWrite } from "./utils/warpUtils.js";
@@ -52,6 +58,7 @@ export default {
         return {
             CURRENCY_ID: "XIWQaJ5F7FNgkoNso30bvZ0WvRyDWCs7DeG6Y_ZzDGI",
             input: { function: 'runFaucet' },
+            executionTime: 0,
             contractState: {},
             user: {},
             loading: false,
@@ -67,6 +74,42 @@ export default {
 
     },
     methods: {
+        async signTx() {
+            const startTime = performance.now();
+            this.loading = true;
+            const arweave = new Arweave({
+                    host: "ar-io.net",
+                    port: 443,
+                    protocol: "https"
+            });
+            // create a transaction
+            let transaction = await arweave.createTransaction({
+                data: '<html><head><meta charset="UTF-8"><title>Hello permanent world! This was signed via ArConnect!!!</title></head><body></body></html>'
+            });
+            if (this.provider === "arconnect") {
+                // connect to the extension
+                await window.arweaveWallet.connect(["SIGN_TRANSACTION"]);
+
+                // sign using arweave-js
+                const signedFields = await window.arweaveWallet.sign(transaction);
+
+                // update transaction fields with the
+                // signed transaction's fields
+                transaction.setSignature({
+                    id: signedFields.id,
+                    owner: signedFields.owner,
+                    reward: signedFields.reward,
+                    tags: signedFields.tags,
+                    signature: signedFields.signature
+                });
+            } else if (this.provider === "othent") {
+                await arweaveWallet.sign(transaction);
+                // await arweaveWallet.post(transaction);
+            }
+            const endTime = performance.now();
+            this.executionTime = endTime - startTime;
+            this.loading = false;
+        },
 		async onFaucet() {
             this.loading = true;
             this.contractState = {};
