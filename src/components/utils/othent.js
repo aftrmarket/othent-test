@@ -1,4 +1,4 @@
-import { connect, disconnect, getActiveKey } from "@othent/kms";
+import { connect, disconnect, getActiveKey } from "@othent/kms-aftr";
 
 export default {
 	async login() {

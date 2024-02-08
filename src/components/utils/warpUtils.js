@@ -13,9 +13,9 @@ function warpInit(env = "") {
     try {
         // Using Warp
         if (env === "PROD") {
-            // warp = WarpFactory.forMainnet().use(new DeployPlugin());
-            warp = WarpFactory.forMainnet({ ...defaultCacheOptions, inMemory: true });
-            // warp = WarpFactory.forMainnet({ ...defaultCacheOptions });
+            warp = WarpFactory.forMainnet({ ...defaultCacheOptions })
+                .use(new DeployPlugin())
+                .useGwUrl('https://gw.warp.cc');
         } else if (env === "TEST") {
             warp = WarpFactory.forTestnet().use(new DeployPlugin());
         } else if (env === "DEV") {
@@ -52,7 +52,7 @@ async function warpRead(contractId, internalWrites = true, env = "TEST", useSdk 
             await warp.close();
         }
     } else {
-        const dre = "https://dre-3.warp.cc";
+        const dre = "https://dre-2.warp.cc";
         const dreUrl = `${dre}/contract?id=${contractId}`;
         let response = {};
     

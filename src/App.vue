@@ -12,6 +12,7 @@
 // import ContractTest from './components/ContractSearch.vue';
 // import ContractTest from './components/EvolveTest.vue';
 // import ContractTest from './components/ContractTest.vue';
-import ContractTest from './components/BuyTest.vue';
+// import ContractTest from './components/BuyTest.vue';
+import ContractTest from './components/RunInteraction.vue';
 </script>
     
