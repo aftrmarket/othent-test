@@ -53,7 +53,7 @@ export default {
             CURRENCY_ID: "XIWQaJ5F7FNgkoNso30bvZ0WvRyDWCs7DeG6Y_ZzDGI",
             input: { function: 'runFaucet' },
             contractState: {},
-
+            user: {},
             loading: false,
             loggedIn: false,
             network: "mainnet",
@@ -114,6 +114,7 @@ export default {
                 this.walletBalance = 0;
                 this.provider = "";
                 this.contractState = {};
+                this.loading = false;
                 this.loggedIn = false;
 				console.info("Logged out successfully");
 			} else {
